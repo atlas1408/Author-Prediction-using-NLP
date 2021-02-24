@@ -1,0 +1,53 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+```{r}
+install.packages("openNLP")
+```
+```{r}
+install.packages("RWeka")
+```
+
+
+
+```{r}
+library(NLP)
+library(openNLP)
+library(RWeka)
+
+library(RWeka)
+library(magrittr)
+```
+
+
+```{r}
+setwd("D:\\ProjectBooksBigData\\Books_Ballantyne\\")
+```
+
+```{r}
+r<-list.files("D:\\ProjectBooksBigData\\Books_Ballantyne\\")
+p <- "D:\\ProjectBooksBigData\\Books_Ballantyne\\"
+```
+
+```{r}
+i=0
+for (variable in r) {
+  temp = paste(p,variable,sep="")
+  print(temp)
+  f <- readLines(temp)
+  f <- paste(f, collapse = " ")
+  file <- as.String(f)
+  word_ann <- Maxent_Word_Token_Annotator()
+  sent_ann <- Maxent_Sent_Token_Annotator()
+  POS <- Maxent_POS_Tag_Annotator()
+  file_annotations <- annotate(file, list(sent_ann, word_ann, POS))
+  file_doc <- AnnotatedPlainTextDocument(file, file_annotations)
+  tags <- tagged_words(file_doc)
+  p2 = "D:\\ProjectBooksBigData\\CSV_Ballantyne\\"
+  val2 = paste(i,".csv",sep = "")
+  val3 = paste(p2,val2,sep="")
+  write.csv(tags,val3)
+  i= i +1
+}
+```

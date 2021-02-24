@@ -1,0 +1,88 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+install.packages("e1071")
+```
+
+```{r}
+install.packages("caret")
+```
+
+```{r}
+library(caret)
+```
+
+
+```{r}
+library(e1071)
+```
+
+```{r}
+d=read.csv("D:\\ProjectBooksBigData\\ExtractedFeatures_modified.csv",header = T,sep = ",")
+dim(d)
+```
+
+```{r}
+d = na.omit(d)
+dim(d)
+```
+
+
+```{r}
+d1 <- d[!apply(d == "", 1, all),]
+```
+
+
+```{r}
+d2 <- d1[sample(nrow(d1)),]
+
+```
+
+
+```{r}
+train_authors = d2[1:160,]
+```
+
+```{r}
+test_authors = d2[161:190,]
+```
+
+```{r}
+x_train = train_authors[,-7]
+y_train = train_authors[,7]
+y_train= as.factor(y_train)
+```
+
+```{r}
+x_test = test_authors[,-7]
+y_test = test_authors[,7]
+y_test= as.factor(y_test)
+```
+
+
+```{r}
+value = train(x_train,y_train,'nb',trControl=trainControl(method = 'cv',number = 10))
+```
+
+
+```{r}
+value
+```
+
+
+```{r}
+predictedvalue = predict(value,x_test)
+```
+
+```{r}
+Storevalues = confusionMatrix(y_test,predictedvalue,mode = "prec_recall")
+```
+
+
+```{r}
+Storevalues
+```
+

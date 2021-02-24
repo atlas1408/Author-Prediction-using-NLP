@@ -1,0 +1,91 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+```{r}
+install.packages("rpart")
+```
+```{r}
+install.packages("rpart.plot")
+```
+
+```{r}
+library("rpart.plot")
+```
+
+
+```{r}
+library("rpart")
+```
+
+```{r}
+library("caret")
+```
+
+
+```{r}
+authors <- read.table("D:\\ProjectBooksBigData\\ExtractedFeatures_modified.csv",sep=",",header=T)
+```
+
+
+```{r}
+authors_modified <- na.omit(authors)
+```
+
+```{r}
+shuffled_data <- authors_modified[sample(nrow(authors_modified)),]
+```
+
+```{r}
+train_authors = shuffled_data[1:160,]
+```
+
+```{r}
+test_authors = shuffled_data[161:190,]
+```
+
+
+```{r}
+author_tree <- rpart(formula=Target~NounRatio+AdjectiveRatio+VerbRatio+AdverbRatio+Conjunction+AvgWordLength,train_authors,method = "class")
+```
+
+
+
+```{r}
+rpart.plot(author_tree)
+```
+
+#help taken https://stackoverflow.com/questions/41536882/there-is-no-package-called-rpart-plot
+#https://medium.com/swlh/learn-classification-with-decision-trees-in-r-79c18df083b5
+
+
+```{r}
+prediction <-predict(author_tree,test_authors,type="class")
+```
+
+```{r}
+prediction_numeric <- as.numeric(prediction)
+```
+
+
+```{r}
+prediction_numeric[prediction_numeric==1]=0
+```
+
+```{r}
+prediction_numeric[prediction_numeric==2]=1
+```
+
+```{r}
+prediction_numeric <- as.factor(prediction_numeric)
+```
+
+```{r}
+test_authors$Target <- as.factor(test_authors$Target)
+```
+
+
+```{r}
+print(confusionMatrix(data = prediction_numeric,reference = test_authors$Target))
+```
+
